@@ -1,0 +1,77 @@
+    .global _start
+    .section .text
+
+_start:
+    @ ======= Part 1.1 =======
+    @ Initialize register with 10 and store in memory
+part1_1:
+    MOV R0, #10           @ Load value 10 into R0
+    LDR R1, =0x20000000   @ Load memory address into R1
+    STR R0, [R1]          @ Store R0's value at address in R1
+
+    @ ======= Part 1.2 =======
+    @ Read value from memory into register
+part1_2:
+    LDR R1, =0x20000000   @ Load memory address into R1
+    LDR R0, [R1]          @ Load value from memory into R0
+
+    @ ======= Part 1.3 =======
+    @ Add two values
+part1_3:
+    MOV R0, #5            @ Load first value (5)
+    MOV R1, #10           @ Load second value (10)
+    ADD R2, R0, R1        @ Add R0 and R1, store result in R2
+
+    @ ======= Part 2.1 =======
+    @ Compare values and set flag
+part2_1:
+    MOV R0, #10           @ First value
+    MOV R1, #20           @ Second value
+    CMP R0, R1            @ Compare R0 and R1
+    MOV R2, #0            @ Initialize flag to 0
+    MOVGT R2, #1          @ If R0 > R1, set flag to 1
+
+    @ ======= Part 2.2 =======
+    @ Save flag value to memory
+part2_2:
+    MOV R0, #10           @ First value
+    MOV R1, #20           @ Second value
+    CMP R0, R1            @ Compare R0 and R1
+    MOV R2, #0            @ Initialize flag to 0
+    MOVGT R2, #1          @ If R0 > R1, set flag to 1
+    LDR R3, =0x30000000   @ Load memory address
+    STR R2, [R3]          @ Store flag value in memory
+
+    @ ======= Part 3.1 =======
+    @ Loop to save numbers 0-9 in memory
+part3_1:
+    MOV R0, #0            @ Counter/value to store
+    LDR R1, =0x40000000   @ Base address
+    MOV R2, #10           @ Loop limit
+
+loop1:
+    STR R0, [R1], #4      @ Store value and increment address
+    ADD R0, R0, #1        @ Increment counter
+    CMP R0, R2            @ Compare with limit
+    BLT loop1             @ Branch if less than
+
+    @ ======= Part 3.2 =======
+    @ Calculate sum from 0 to N (N in R1)
+part3_2:
+    MOV R1, #5            @ Example: Set N=5
+    MOV R0, #0            @ Initialize sum to 0
+    MOV R2, #0            @ Initialize counter
+
+loop2:
+    CMP R2, R1            @ Compare counter with N
+    BGT end               @ If counter > N, end
+    ADD R0, R0, R2        @ Add counter to sum
+    ADD R2, R2, #1        @ Increment counter
+    B loop2               @ Branch back to loop
+
+end:
+    @ Program end
+    MOV R7, #1            @ Exit syscall
+    SWI 0                 @ Software interrupt
+
+    .end
